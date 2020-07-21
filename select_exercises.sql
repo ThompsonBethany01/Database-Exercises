@@ -40,3 +40,7 @@ FROM albums
 WHERE genre = 'rock' OR genre = 'Hard Rock' OR genre = 'Progressive Rock' OR genre = 'Alternative Rock';
 
 #'Rock' != 'Hard Rock', they are not equivalent
+
+SELECT *
+FROM albums
+WHERE genre LIKE '%Rock';
