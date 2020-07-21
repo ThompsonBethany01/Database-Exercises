@@ -1,4 +1,4 @@
--- Use the albums_db database.
+-- Use the albums_db database
 USE albums_db;
 
 -- Explore the structure of the albums table.
