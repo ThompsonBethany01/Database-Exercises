@@ -33,3 +33,7 @@ SHOW CREATE TABLE dept_manager;
 #	CONSTRAINT `dept_manager_ibfk_2` FOREIGN KEY (`dept_no`) REFERENCES `departments` (`dept_no`) ON DELETE CASCADE
 #	) 
 #ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+SELECT artist, genre
+FROM albums
+WHERE genre LIKE '%rock%';
