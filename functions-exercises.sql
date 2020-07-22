@@ -123,11 +123,12 @@ FROM salaries;
 
 SELECT emp_no AS 'Employee Number', 
 		LOWER(CONCAT(
-               SUBSTR(first_name,1,4), -- first 4 char in name
-               "_",
+			   SUBSTR(first_name,1,1), -- first 4 char in last name
+               SUBSTR(last_name,1,4),  -- first 4 char in last name
                SUBSTR(birth_date,6,2), -- birth month
-               "_",
+               "_",                    -- underscore
                SUBSTR(birth_date,3,2)  -- birth year
-		)) 
-AS 'Username', CONCAT(first_name, ' ',last_name) AS 'Full Name', birth_date AS 'Birthday'
+		)) AS 'Username', 
+		CONCAT(first_name, ' ',last_name) AS 'Full Name', 
+		birth_date AS 'Birthday'
 FROM employees;
