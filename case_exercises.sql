@@ -23,6 +23,17 @@ SELECT CONCAT(first_name, ' ', last_name) AS full_name,
 FROM employees
 ORDER BY last_name;
 
+-- Another option
+SELECT CONCAT(first_name, ' ', last_name) AS full_name,
+	CASE
+		WHEN SUBSTR(last_name, 1, 1) REGEXP '[abcdefgh]' THEN 'A-H'
+		WHEN SUBSTR(last_name, 1, 1) REGEXP '[ijklmnopq]' THEN 'I-Q'
+		WHEN SUBSTR(last_name, 1, 1) REGEXP '[rstuvwxyz]' THEN 'R-Z'
+		ELSE `last_name`
+		END as alpha_group
+FROM employees
+ORDER BY last_name;
+
 -- 3. How many employees were born in each decade?
 
 SELECT COUNT(birth_date) AS total_employees,
@@ -41,21 +52,21 @@ GROUP BY decade;
 
 -- Step 1: Combine specified groups
 
-SELECT dept_name,		CASE 			WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod_&_QM'
+SELECT dept_name,		CASE 			WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('production', 'quality management') THEN 'Prod_&_QM'
 			WHEN dept_name IN ('finance', 'human resources') THEN 'Finance_&_HR'
 			WHEN dept_name IN ('customer service') THEN 'Customer_Service'
 			ELSE dept_name		END AS dept_groupFROM employees.departments
 ORDER BY dept_group;
 
 -- Step 2: Group By dept_group
-SELECT		CASE 					WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod_&_QM'
+SELECT		CASE 					WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('production', 'quality management') THEN 'Prod_&_QM'
 			WHEN dept_name IN ('finance', 'human resources') THEN 'Finance_&_HR'
 			WHEN dept_name IN ('customer service') THEN 'Customer_Service'			ELSE dept_name		END AS dept_groupFROM employees.departments
 GROUP BY dept_group;
 
 -- Step 3: Join salaries/End Results
 
-SELECT		CASE		-- Case statment groups by specified departments			WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod_&_QM'
+SELECT		CASE		-- Case statment groups by specified departments			WHEN dept_name IN ('research', 'development') THEN 'R_&_D'			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales_&_Marketing' 			WHEN dept_name IN ('production', 'quality management') THEN 'Prod_&_QM'
 			WHEN dept_name IN ('finance', 'human resources') THEN 'Finance_&_HR'
 			WHEN dept_name IN ('customer service') THEN 'Customer_Service'			ELSE dept_name		END AS dept_group,
 		FORMAT(AVG(salary), 2) AS avg_salary -- Calculates avg salary of grouped departmentsFROM departments
