@@ -2,12 +2,59 @@
 
 -- How much do the current managers of each department get paid, relative to the average salary for the department? 
 
-SELECT *
+#first let's find the average salary for each department
+SELECT de.dept_no as department, AVG(s.salary) as average_salary
+FROM salaries as s
+JOIN dept_emp as de on de.emp_no = s.emp_no and de.to_date > CURDATE()
+WHERE s.to_date > CURDATE()
+GROUP BY de.dept_no;
+
+#second we find the salary of all current managers, along with their department no
+SELECT dm.emp_no, dm.dept_no, s.salary
 FROM dept_manager as dm
 JOIN salaries as s on s.emp_no = dm.emp_no and s.to_date > CURDATE()
 WHERE dm.to_date > CURDATE();
 
+#let's add their names
+SELECT CONCAT(e.first_name, ' ',e.last_name) as first_name, dm.emp_no, dm.dept_no, s.salary
+FROM dept_manager as dm
+JOIN salaries as s on s.emp_no = dm.emp_no and s.to_date > CURDATE()
+JOIN employees as e on e.emp_no = dm.emp_no
+WHERE dm.to_date > CURDATE();
+
+#now we can add the tables together
+SELECT CONCAT(e.first_name, ' ',e.last_name) as first_name, dm.emp_no, dm.dept_no, s.salary as manager_salary, dept_s.department_salary
+FROM dept_manager as dm
+JOIN salaries as s on s.emp_no = dm.emp_no and s.to_date > CURDATE()
+JOIN employees as e on e.emp_no = dm.emp_no
+JOIN (
+		SELECT de.dept_no, ROUND(AVG(s.salary),0) as department_salary
+		FROM salaries as s
+		JOIN dept_emp as de on de.emp_no = s.emp_no and de.to_date > CURDATE()
+		WHERE s.to_date > CURDATE()
+		GROUP BY de.dept_no
+		) as dept_s on dept_s.dept_no = dm.dept_no
+WHERE dm.to_date > CURDATE();
+
 -- Is there any department where the department manager gets paid less than the average salary?
+#two managers make less money than the department average
+SELECT *
+FROM(
+	SELECT CONCAT(e.first_name, ' ',e.last_name) as first_name, dm.emp_no, dm.dept_no, s.salary as manager_salary, dept_s.department_salary
+	FROM dept_manager as dm
+	JOIN salaries as s on s.emp_no = dm.emp_no and s.to_date > CURDATE()
+	JOIN employees as e on e.emp_no = dm.emp_no
+	JOIN (
+		SELECT de.dept_no, ROUND(AVG(s.salary),0) as department_salary
+		FROM salaries as s
+		JOIN dept_emp as de on de.emp_no = s.emp_no and de.to_date > CURDATE()
+		WHERE s.to_date > CURDATE()
+		GROUP BY de.dept_no
+		) as dept_s on dept_s.dept_no = dm.dept_no
+	WHERE dm.to_date > CURDATE()
+	) as dept_man_salaries
+JOIN departments as d on d.dept_no = dept_man_salaries.dept_no
+WHERE  manager_salary < department_salary;
 
 -- Step 1: Find salary of current managers
 
